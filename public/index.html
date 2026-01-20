@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hitster</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="appShell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brandMark">H</div>
+                <div class="brandText">
+                    <div class="brandName">Hitster</div>
+                    <div class="brandTag">multiplayer timeline guessing</div>
+                </div>
+            </div>
+
+            <div class="topbarMeta">
+                <div class="pill">
+                    <span class="pillLabel">Room</span>
+                    <span id="roomLabel" class="pillValue">—</span>
+                </div>
+                <div class="pill">
+                    <span class="pillLabel">Host</span>
+                    <span id="hostLabel" class="pillValue">—</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="page">
+            <!-- HOME UI -->
+            <div id="homeUI" class="homeGrid">
+                <div class="panel">
+                    <div class="panelHeader">
+                        <h2 class="panelTitle">Lobby</h2>
+                        <p class="panelSub">Create a room or join one with a code.</p>
+                    </div>
+
+                    <div class="field">
+                        <label>Your name</label>
+                        <input id="name" placeholder="e.g., Aidan" maxlength="20" />
+                    </div>
+
+                    <div class="actions">
+                        <button id="createBtn" class="primary wide">Create Room</button>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="field">
+                        <label>Room code</label>
+                        <input id="roomCode" placeholder="e.g., A7KF" maxlength="6" />
+                    </div>
+
+                    <div class="actions">
+                        <button id="joinBtn" class="wide">Join Room</button>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- NEW: Singleplayer -->
+                    <div class="panelHeader" style="margin-top: 6px;">
+                        <h2 class="panelTitle">Singleplayer</h2>
+                        <p class="panelSub">Play solo. No challenge phase — lock guess → instant reveal.</p>
+                    </div>
+                    <div class="actions">
+                        <button id="singleBtn" class="primary wide">Play Singleplayer</button>
+                    </div>
+
+                    <div class="statusRow">
+                        <p id="status" class="status">Not connected</p>
+                        <p id="error" class="error"></p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panelHeader">
+                        <h2 class="panelTitle">Players</h2>
+                        <p class="panelSub">Once you’re in a room, everyone shows up here.</p>
+                    </div>
+
+                    <ul id="players" class="playersList"></ul>
+
+                    <p class="hint" id="roomHint">Create or join a room to see players here.</p>
+
+                    <div id="hostControls" class="actions hidden">
+                        <button id="startGameBtn" class="primary wide">Start Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME SCREEN -->
+            <div id="gameUI" class="hidden gameShell">
+                <div class="gameTop">
+                    <div class="gameTitle">
+                        <div class="gameTitleLabel">Active player</div>
+                        <div class="gameTitleValue"><span id="activeName">—</span></div>
+                    </div>
+
+                    <div class="gameTopHint">
+                        <span class="muted">Tip:</span> active player plays + locks guess → everyone challenges → reveal
+                    </div>
+                </div>
+
+                <div class="gameLayout">
+                    <aside class="sidePanel">
+                        <div class="sideHeader">
+                            <h3>Players</h3>
+                        </div>
+                        <div id="gamePlayers"></div>
+                    </aside>
+
+                    <section class="mainPanel">
+                        <div class="timelineGrid">
+                            <div class="sectionCard" id="mySection">
+                                <div class="sectionHead">
+                                    <h3>Your timeline</h3>
+                                    <div class="sectionHint">Your collected cards</div>
+                                </div>
+                                <div id="myTimeline" class="timeline"></div>
+                            </div>
+
+                            <div class="sectionCard" id="activeSection">
+                                <div class="sectionHead">
+                                    <h3>Active player’s timeline</h3>
+                                    <div class="sectionHint">Visible while you challenge</div>
+                                </div>
+                                <div id="activeTimeline" class="timeline"></div>
+                            </div>
+                        </div>
+
+                        <div class="sectionCard turnCard">
+                            <div class="sectionHead">
+                                <h3>Current turn</h3>
+                                <div class="sectionHint">Actions + reveal info</div>
+                            </div>
+                            <div id="turnArea"></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden YouTube player (audio-only) -->
+    <div class="yt-audio-only">
+        <div id="player"></div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- entry point -->
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,646 @@
+/* -------------------------
+   Theme / Base
+-------------------------- */
+:root {
+    --bg0: #0b1020;
+    --bg1: #0a1530;
+    --card: rgba(255, 255, 255, 0.06);
+    --card2: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.10);
+    --border2: rgba(255, 255, 255, 0.16);
+    --text: #e7eaf3;
+    --muted: rgba(231, 234, 243, 0.70);
+    --muted2: rgba(231, 234, 243, 0.55);
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow2: 0 16px 50px rgba(0, 0, 0, 0.45);
+
+    --blue: #4f7cff;
+    --blue2: #2f5cff;
+    --good: #27c07d;
+    --bad: #ff4d6d;
+
+    --radius: 18px;
+    --radius2: 22px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(1200px 700px at 15% 20%, rgba(79, 124, 255, 0.25), transparent 55%),
+        radial-gradient(900px 600px at 80% 0%, rgba(39, 192, 125, 0.14), transparent 55%),
+        radial-gradient(900px 650px at 70% 90%, rgba(255, 77, 109, 0.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.error {
+    color: #ffd1d8;
+    font-weight: 700;
+}
+
+/* -------------------------
+   Shell / Topbar
+-------------------------- */
+.appShell {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.topbar {
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 16, 32, 0.65);
+    backdrop-filter: blur(10px);
+}
+
+.brand {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.brandMark {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    background:
+        radial-gradient(120% 120% at 20% 20%, rgba(79, 124, 255, 0.9), rgba(47, 92, 255, 0.1)),
+        rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border2);
+    box-shadow: var(--shadow);
+}
+
+.brandName {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.05;
+}
+
+.brandTag {
+    font-size: 12px;
+    color: var(--muted2);
+    margin-top: 2px;
+}
+
+.topbarMeta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.pill {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+}
+
+.pillLabel {
+    font-size: 12px;
+    color: var(--muted2);
+    font-weight: 700;
+}
+
+.pillValue {
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* -------------------------
+   Page / Home
+-------------------------- */
+.page {
+    padding: 22px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.homeGrid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    box-shadow: var(--shadow2);
+    padding: 18px;
+    backdrop-filter: blur(12px);
+}
+
+.panelHeader {
+    margin-bottom: 14px;
+}
+
+.panelTitle {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.2px;
+}
+
+.panelSub {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted2);
+}
+
+.field {
+    margin-top: 12px;
+}
+
+label {
+    display: block;
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+input,
+select {
+    width: 100%;
+    border: 1px solid var(--border2);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 12px 12px;
+    font-size: 15px;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(231, 234, 243, 0.45);
+}
+
+input:focus,
+select:focus {
+    border-color: rgba(79, 124, 255, 0.65);
+    box-shadow: 0 0 0 4px rgba(79, 124, 255, 0.15);
+}
+
+.actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: 1px solid var(--border2);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 120ms ease, filter 120ms ease, background 120ms ease;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.09);
+    filter: brightness(1.03);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0px);
+}
+
+button.primary {
+    border-color: rgba(79, 124, 255, 0.55);
+    background:
+        radial-gradient(120% 120% at 20% 20%, rgba(79, 124, 255, 0.9), rgba(47, 92, 255, 0.25));
+}
+
+button.primary:hover {
+    filter: brightness(1.06);
+}
+
+button.wide {
+    width: 100%;
+    justify-content: center;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+}
+
+.statusRow {
+    margin-top: 12px;
+    display: grid;
+    gap: 6px;
+}
+
+.status {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.hint,
+.playHint {
+    color: var(--muted2);
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.playersList {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.playersList li {
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 800;
+}
+
+/* -------------------------
+   Game Layout
+-------------------------- */
+.gameShell {
+    margin-top: 8px;
+}
+
+.gameTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.gameTitleLabel {
+    font-size: 12px;
+    color: var(--muted2);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+}
+
+.gameTitleValue {
+    margin-top: 4px;
+    font-size: 22px;
+    font-weight: 950;
+}
+
+.gameTopHint {
+    font-size: 13px;
+    color: var(--muted2);
+    padding: 10px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.gameLayout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.sidePanel {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    box-shadow: var(--shadow2);
+    padding: 14px;
+    backdrop-filter: blur(12px);
+}
+
+.sideHeader h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.mainPanel {
+    display: grid;
+    gap: 16px;
+}
+
+.timelineGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.sectionCard {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    box-shadow: var(--shadow2);
+    padding: 14px;
+    backdrop-filter: blur(12px);
+}
+
+.sectionHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.sectionHead h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.sectionHint {
+    font-size: 12px;
+    color: var(--muted2);
+}
+
+.turnCard #turnArea {
+    display: grid;
+    gap: 10px;
+}
+
+/* -------------------------
+   Players (in-game list rows)
+-------------------------- */
+.playerRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+}
+
+.playerRow.active {
+    border-color: rgba(79, 124, 255, 0.55);
+    background: rgba(79, 124, 255, 0.14);
+}
+
+.playerRow>div:first-child {
+    font-weight: 950;
+}
+
+.playerRow>div:last-child {
+    color: var(--muted);
+    font-weight: 800;
+}
+
+/* -------------------------
+   Timelines + Cards
+-------------------------- */
+.timeline {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 6px 2px 10px;
+    scroll-snap-type: x proximity;
+}
+
+.timeline::-webkit-scrollbar {
+    height: 10px;
+}
+
+.timeline::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+}
+
+.songCard {
+    width: 175px;
+    flex: 0 0 auto;
+    border-radius: 18px;
+    padding: 12px;
+    border: 1px solid var(--border2);
+    background:
+        radial-gradient(120% 120% at 20% 20%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)),
+        rgba(0, 0, 0, 0.14);
+    box-shadow: var(--shadow);
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+}
+
+.songCard:before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(40% 60% at 20% 15%, rgba(79, 124, 255, 0.25), transparent 55%);
+    pointer-events: none;
+}
+
+.songArtist {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+    position: relative;
+}
+
+.songYear {
+    font-size: 34px;
+    font-weight: 1000;
+    text-align: center;
+    margin: 12px 0 12px;
+    letter-spacing: 0.6px;
+    position: relative;
+}
+
+.songTitle {
+    font-size: 13px;
+    font-weight: 950;
+    text-align: center;
+    color: rgba(231, 234, 243, 0.92);
+    position: relative;
+}
+
+/* Play card */
+.playCard {
+    width: 175px;
+    height: 240px;
+    border-radius: 18px;
+    border: 1px dashed rgba(231, 234, 243, 0.35);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: var(--shadow);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 120ms ease, background 120ms ease;
+}
+
+.playCard:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-2px);
+}
+
+.playSymbol {
+    font-size: 64px;
+    font-weight: 1000;
+}
+
+/* -------------------------
+   Selects (placement)
+-------------------------- */
+select {
+    min-width: 0;
+}
+
+/* -------------------------
+   Volume
+-------------------------- */
+.volumeWrap {
+    margin: 8px 0 14px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.volumeLabel {
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+}
+
+.volumeSlider {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    outline: none;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 2px solid rgba(0, 0, 0, 0.35);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    margin-top: -4px;
+}
+
+.volumeSlider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 2px solid rgba(0, 0, 0, 0.35);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+}
+
+.volumeSlider::-moz-range-track {
+    height: 10px;
+    border-radius: 999px;
+    background: transparent;
+}
+
+/* -------------------------
+   Hide YouTube video
+-------------------------- */
+.yt-audio-only {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* -------------------------
+   Responsive
+-------------------------- */
+@media (max-width: 980px) {
+    .homeGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .gameLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .timelineGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .gameTop {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .gameTopHint {
+        border-radius: 16px;
+        width: 100%;
+    }
+}
