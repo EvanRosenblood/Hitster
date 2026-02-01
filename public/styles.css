@@ -22,7 +22,189 @@
 
     --radius: 18px;
     --radius2: 22px;
+
+    --cardW: 160px;
+    --cardH: 200px;
 }
+
+/* -------------------------
+   Challenge tokens + drop zones (ADD-ON)
+   (Doesn't change existing layout; just styles the new token board + drop slots)
+-------------------------- */
+
+.tokenBoard {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tokenBoardTitle {
+    font-size: 14px;
+    font-weight: 900;
+    margin-bottom: 2px;
+}
+
+.tokenBoardSub {
+    font-size: 12px;
+    color: var(--muted2);
+    margin-bottom: 10px;
+}
+
+.tokenArea {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.18);
+    padding: 10px;
+}
+
+.tokenAreaLabel {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.25px;
+}
+
+.tokenStrip {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Tokens: show ONLY the image (no square background) */
+.token {
+    width: 100px;
+    height: 100px;
+    display: grid;
+    place-items: center;
+
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+
+    cursor: grab;
+    padding: 0;
+}
+
+.token:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.token.dragging {
+    opacity: 0.55;
+    transform: scale(0.97);
+}
+
+.tokenImg {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+
+.tokenEmpty {
+    font-size: 12px;
+    color: var(--muted2);
+    padding: 6px 2px;
+}
+
+.tokenHint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted2);
+}
+
+.dropZone {
+    width: var(--cardW);
+    min-width: var(--cardW);
+    height: var(--cardH);
+
+    margin: 0 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+    border: 1px dashed rgba(231, 234, 243, 0.35);
+    background: rgba(255, 255, 255, 0.03);
+
+    transition: border-color 120ms ease, background 120ms ease;
+}
+
+.dropRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropLabel {
+    font-size: 12px;
+    font-weight: 900;
+    color: rgba(231, 234, 243, 0.78);
+}
+
+.dropHint {
+    font-size: 12px;
+    color: var(--muted2);
+}
+
+.dropTaken {
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(231, 234, 243, 0.78);
+}
+
+.dropZone.over {
+    border-color: rgba(79, 124, 255, 0.75);
+    background: rgba(79, 124, 255, 0.12);
+}
+
+.dropZone.filled {
+    border-style: solid;
+    border-color: rgba(39, 192, 125, 0.55);
+    background: rgba(39, 192, 125, 0.10);
+}
+
+.dropZone.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Hide the slot label when the play card is inside that slot */
+.guessZone.occupied .dropLabel {
+    display: none;
+}
+
+/* Guess placement zones on YOUR timeline (active player) */
+.guessZone {
+    cursor: pointer;
+}
+
+.guessZone.selected {
+    border-style: solid;
+    border-color: rgba(255, 200, 79, 0.75);
+    background: rgba(255, 200, 79, 0.10);
+}
+
+.playCardDraggable {
+    cursor: grab;
+}
+
+.playCardDraggable.dragging {
+    cursor: grabbing;
+    opacity: 0.85;
+}
+
+
+/* ---- rest of your existing styles.css continues below unchanged ---- */
 
 * {
     box-sizing: border-box;
@@ -376,7 +558,7 @@ button:disabled {
 
 .timelineGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
 }
 
@@ -462,77 +644,109 @@ button:disabled {
 }
 
 .songCard {
-    width: 175px;
+    width: 220px;
+    height: 240px;
     flex: 0 0 auto;
-    border-radius: 18px;
-    padding: 12px;
-    border: 1px solid var(--border2);
-    background:
-        radial-gradient(120% 120% at 20% 20%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)),
-        rgba(0, 0, 0, 0.14);
-    box-shadow: var(--shadow);
-    scroll-snap-align: start;
-    position: relative;
+    border-radius: 22px;
     overflow: hidden;
+
+    border: none;
+    box-shadow: none;
+
+    /* your PNG background (set inline by JS) will show here */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* IMPORTANT: layout INSIDE the PNG */
+    display: grid;
+    grid-template-rows: 34px 1fr 44px;
+    /* artist | year | title */
+    align-items: center;
+
+    padding: 0;
 }
 
 .songCard:before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    background: radial-gradient(40% 60% at 20% 15%, rgba(79, 124, 255, 0.25), transparent 55%);
-    pointer-events: none;
+    content: none !important;
 }
 
 .songArtist {
-    font-size: 12px;
+    text-align: center;
+    font-size: 13px;
     font-weight: 900;
-    color: var(--muted);
-    margin-bottom: 8px;
     letter-spacing: 0.2px;
-    position: relative;
+    padding-top: 80px;
+    margin: 0;
+    /* IMPORTANT: no pushing */
+    line-height: 1.1;
+    color: #111;
 }
 
 .songYear {
-    font-size: 34px;
-    font-weight: 1000;
     text-align: center;
-    margin: 12px 0 12px;
+    font-size: 38px;
+    font-weight: 1000;
     letter-spacing: 0.6px;
-    position: relative;
+
+    margin: 0;
+    /* IMPORTANT */
+    line-height: 1;
+    color: #111;
 }
 
 .songTitle {
+    text-align: center;
     font-size: 13px;
     font-weight: 950;
-    text-align: center;
-    color: rgba(231, 234, 243, 0.92);
-    position: relative;
+    transform: translateY(-35px);
+    margin: 0;
+    /* IMPORTANT */
+    line-height: 1.15;
+    color: #111;
+
+    /* keep title from overflowing too hard */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Play card */
+
+
 .playCard {
-    width: 175px;
-    height: 240px;
-    border-radius: 18px;
-    border: 1px dashed rgba(231, 234, 243, 0.35);
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: var(--shadow);
+    width: 200px;
+    /* match your song cards */
+    height: 260px;
+    border-radius: 22px;
+    overflow: hidden;
+
+    border: none;
+    background: transparent;
+    box-shadow: none;
+
     display: grid;
     place-items: center;
+
     cursor: pointer;
     user-select: none;
-    transition: transform 120ms ease, background 120ms ease;
 }
 
-.playCard:hover {
-    background: rgba(255, 255, 255, 0.07);
-    transform: translateY(-2px);
+.playCardImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* fills card */
+    display: block;
 }
 
 .playSymbol {
     font-size: 64px;
     font-weight: 1000;
+}
+
+.playCard:hover {
+    transform: translateY(-2px);
 }
 
 /* -------------------------

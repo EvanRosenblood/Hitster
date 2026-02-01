@@ -1,6 +1,5 @@
 // public/render/game.js
 // Game rendering (both active + non-active views). No global DOM queries.
-// This is intended to replace the big renderGame() chunk in main.js next.
 
 import {
     amActivePlayer,
@@ -10,8 +9,10 @@ import {
 
 import { el, renderSongCard, renderVolumeSlider, updateRangeFill } from "./components.js";
 import {
-    buildPlacementSelect,
+    slotLabelForIndex,
+    renderMyTimelineWithGuessDropZones,
     renderActiveTimelineWithDropZones,
+    buildTokenBoard,
     buildChallengePanel,
     buildWaitingChallengePanel,
 } from "./challenge.js";
@@ -25,11 +26,13 @@ export function createGameRenderer({
     getMyName,
 }) {
     let lastCardNonceRendered = null;
+    let activeGuessPlacementIndex = 0;
 
     async function onChallenge(placementIndex) {
         const resp = await api.challenge({ placementIndex: Number(placementIndex) });
         if (!resp?.ok) setError(resp?.error || "Challenge failed");
         else setError("");
+        return resp;
     }
 
     function renderPlayUIOnly({ state }) {
@@ -37,7 +40,15 @@ export function createGameRenderer({
         const playRow = el("div", "row");
 
         const playCard = el("div", "playCard");
-        playCard.appendChild(el("div", "playSymbol", "▶"));
+
+        const img = document.createElement("img");
+        img.src = "/assets/cards/cardPlay.png";
+        img.alt = "Play";
+        img.className = "playCardImg";
+        img.draggable = false;
+
+        playCard.appendChild(img);
+
         playCard.addEventListener("click", async () => {
             const resp = await api.play();
             if (!resp?.ok) setError(resp?.error || "Could not play");
@@ -60,13 +71,7 @@ export function createGameRenderer({
         playRow.appendChild(buyBtn);
 
         wrap.appendChild(playRow);
-
-        if (state?.game?.singleplayer) {
-            wrap.appendChild(el("div", "playHint", "Click ▶ to play. Choose placement + guess title/artist → confirm choice → reveal."));
-        } else {
-            wrap.appendChild(el("div", "playHint", "Click ▶ to play. Lock guess → challenge → reveal."));
-        }
-
+        wrap.appendChild(el("div", "playHint", "Click ▶ to play. Lock guess → challenge → reveal."));
         return wrap;
     }
 
@@ -77,25 +82,37 @@ export function createGameRenderer({
         const shouldReset = nonce !== lastCardNonceRendered;
         lastCardNonceRendered = nonce;
 
-        if (state?.game?.singleplayer) {
-            wrap.appendChild(
-                el(
-                    "div",
-                    "playHint",
-                    "While the song plays: choose placement + guess title/artist. Confirm choice reveals instantly."
-                )
-            );
-        } else {
-            wrap.appendChild(
-                el(
-                    "div",
-                    "playHint",
-                    "While the song plays: choose placement + guess title/artist. Lock guess starts challenge phase."
-                )
-            );
-        }
+        if (shouldReset) activeGuessPlacementIndex = 0;
 
-        const select = buildPlacementSelect(myTimeline);
+        const dragRow = el("div", "row");
+        const playCard = el("div", "playCard playCardDraggable");
+        const img = document.createElement("img");
+        img.src = "/assets/cards/cardPlay.png";
+        img.alt = "Drag to choose placement";
+        img.className = "playCardImg";
+        img.draggable = false;
+        playCard.appendChild(img);
+        playCard.draggable = true;
+
+        playCard.addEventListener("dragstart", (ev) => {
+            setError?.("");
+            playCard.classList.add("dragging");
+
+            try {
+                ev.dataTransfer.setData("text/plain", "play-card");
+                ev.dataTransfer.effectAllowed = "move";
+            } catch { }
+        });
+
+        playCard.addEventListener("dragend", () => {
+            playCard.classList.remove("dragging");
+
+            // ✅ if it ended inside a zone (drop success), hide label again
+            const zone = playCard.closest(".guessZone");
+            if (zone) zone.classList.add("occupied");
+        });
+
+        dragRow.appendChild(playCard);
 
         const titleInput = document.createElement("input");
         titleInput.placeholder = "Guess song title";
@@ -108,7 +125,6 @@ export function createGameRenderer({
         if (shouldReset) {
             titleInput.value = "";
             artistInput.value = "";
-            select.value = "0";
         }
 
         const row = el("div", "row");
@@ -121,13 +137,10 @@ export function createGameRenderer({
         });
 
         const submitBtn = el("button", "primary");
-        submitBtn.textContent = state?.game?.singleplayer
-            ? "Confirm choice"
-            : "Lock guess (start challenge)";
-
+        submitBtn.textContent = "Lock guess (start challenge)";
         submitBtn.addEventListener("click", async () => {
             const resp = await api.submitGuess({
-                placementIndex: Number(select.value),
+                placementIndex: Number(activeGuessPlacementIndex),
                 titleGuess: titleInput.value,
                 artistGuess: artistInput.value,
             });
@@ -137,7 +150,7 @@ export function createGameRenderer({
         row.appendChild(skipBtn);
         row.appendChild(submitBtn);
 
-        wrap.appendChild(select);
+        wrap.appendChild(dragRow);
         wrap.appendChild(titleInput);
         wrap.appendChild(artistInput);
         wrap.appendChild(row);
@@ -165,11 +178,8 @@ export function createGameRenderer({
                         .join(" | ");
             }
 
-            // In singleplayer, don't even mention challenges
-            const extra = state?.game?.singleplayer ? "" : ` | ${challengeLine}`;
-
             turnAreaEl.appendChild(
-                el("div", "playHint", `Reveal: ${songLine} | ${winnerLine} | ${activeLine}${extra}`)
+                el("div", "playHint", `Reveal: ${songLine} | ${winnerLine} | ${activeLine} | ${challengeLine}`)
             );
             return;
         }
@@ -179,13 +189,7 @@ export function createGameRenderer({
         }
     }
 
-    /**
-     * Main game render call
-     */
-    function renderGame({
-        state,
-        dom, // { gamePlayersEl, activeNameEl, myTimelineEl, activeTimelineEl, activeSectionEl, turnAreaEl }
-    }) {
+    function renderGame({ state, dom }) {
         const myName = getMyName();
         const phase = state.game?.phase;
         const activeName = state.game?.activePlayer || "—";
@@ -210,11 +214,35 @@ export function createGameRenderer({
             }
         }
 
+        // Token board always visible under Players list
+        dom.gamePlayersEl.appendChild(
+            buildTokenBoard({
+                state,
+                myName,
+                tokenImgSrc,
+                setError,
+            })
+        );
+
         // My timeline
-        dom.myTimelineEl.innerHTML = "";
         const mePlayer = findPlayerByName(state, myName);
         const myTimeline = mePlayer?.timeline || [];
-        for (const song of myTimeline) dom.myTimelineEl.appendChild(renderSongCard(song));
+
+        if (amActivePlayer(state, myName) && phase === "PLAYING") {
+            renderMyTimelineWithGuessDropZones({
+                myTimelineEl: dom.myTimelineEl,
+                myTimeline,
+                selectedIndex: activeGuessPlacementIndex,
+                onSelect: (idx) => {
+                    activeGuessPlacementIndex = Number(idx);
+                    setError?.("");
+                },
+                setError,
+            });
+        } else {
+            dom.myTimelineEl.innerHTML = "";
+            for (const song of myTimeline) dom.myTimelineEl.appendChild(renderSongCard(song));
+        }
 
         // Active player's timeline section (hidden when I'm active)
         if (amActivePlayer(state, myName)) {
@@ -253,8 +281,6 @@ export function createGameRenderer({
                     buildChallengePanel({
                         state,
                         myName,
-                        tokenImgSrc,
-                        setError,
                     })
                 );
             } else {

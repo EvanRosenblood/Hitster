@@ -49,7 +49,7 @@ const domGame = {
     turnAreaEl: document.getElementById("turnArea"),
 };
 
-const TOKEN_IMG_SRC = "token.png";
+const TOKEN_IMG_SRC = "/assets/token.png";
 
 /* ---------- State ---------- */
 let state = null;
